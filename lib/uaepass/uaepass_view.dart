@@ -36,7 +36,7 @@ class _UaePassLoginViewState extends State<UaePassLoginView> {
   void initState() {
     super.initState();
 
-    subscription = FGBGEvents.stream.listen((event) {
+    subscription = FGBGEvents.instance.stream.listen((event) {
       if (event == FGBGType.foreground) {
         if (successUrl != null) {
           final decoded = Uri.decodeFull(successUrl!);
