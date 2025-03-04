@@ -77,7 +77,7 @@ class UaePassAPI {
     await MemoryService.instance.initialize();
     String url = await _getURL();
     if (context.mounted) {
-      return await Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => UaePassLoginView(
