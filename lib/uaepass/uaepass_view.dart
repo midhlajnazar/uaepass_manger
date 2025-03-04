@@ -23,19 +23,6 @@ class _CustomWebViewState extends State<CustomWebView> {
   String? successUrl;
   late StreamSubscription<FGBGType> subscription;
 
-  // Staging credentials for UAE Pass API
-  final String stagingClientId = 'moca_smart_mob_stage';
-  final String stagingClientSecret = 'ecWZfTxaFPAnhkGs';
-
-  // Production credentials for UAE Pass API
-  final String productionClientId = 'moca_smart_app_prod';
-  final String prodClientSecret = 'PzOFlk5D35GTN47u';
-
-  // Common configuration
-  final String spcName = 'MOCA Smart MOB'; // Service provider name
-  final String redirectUrl = 'mocaapp://com.exarcplus.pmo/uaepass'; // Redirect URL for UAE Pass
-  final String redirectUrlSchema = 'mocaapp'; // Red
-
   @override
   void dispose() {
     subscription.cancel();
@@ -84,8 +71,8 @@ class _CustomWebViewState extends State<CustomWebView> {
       String? successURL = uri.queryParameters['successurl'];
       successUrl = successURL;
       final newUrl = '${Const.uaePassScheme(widget.isProduction)}${uri.host}${uri.path}';
-      String u = "$newUrl?successurl=$redirectUrlSchema://success"
-          "&failureurl=$redirectUrlSchema://failure"
+      String u = "$newUrl?successurl=${widget.appSchema}://success"
+          "&failureurl=$${widget.appSchema}://failure"
           "&closeondone=true";
 
       await launchUrl(Uri.parse(u));
