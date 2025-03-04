@@ -17,7 +17,7 @@ dependencies:
   url_launcher: ^6.2.6
   http: ^1.2.1
   flutter_fgbg: ^0.6.0
-  flutter_inappwebview: ^6.0.0
+  webview_flutter: ^4.10.0
   get_storage: ^2.1.1
 
 dev_dependencies:

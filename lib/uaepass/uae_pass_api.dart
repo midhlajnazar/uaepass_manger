@@ -80,13 +80,14 @@ class UaePassAPI {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => UaePassLoginView(
+          builder: (context) => CustomWebView(
             url: url,
-            urlScheme: _appScheme,
+            appSchema: _appScheme,
             isProduction: _isProduction,
           ),
         ),
       );
+      return MemoryService.instance.accessCode;
     }
     return MemoryService.instance.accessCode;
   }
@@ -172,9 +173,9 @@ class UaePassAPI {
       return await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => UaePassLoginView(
+          builder: (context) => CustomWebView(
             url: url,
-            urlScheme: _appScheme,
+            appSchema: _appScheme,
             isProduction: _isProduction,
           ),
         ),

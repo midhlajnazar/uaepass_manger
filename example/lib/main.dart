@@ -34,13 +34,34 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String? _token;
   UAEPASSUserProfile? _user;
+
+
+  // Staging credentials for UAE Pass API
+  final String stagingClientId = 'moca_smart_mob_stage';
+  final String stagingClientSecret = 'ecWZfTxaFPAnhkGs';
+
+  // Production credentials for UAE Pass API
+  final String productionClientId = 'moca_smart_app_prod';
+  final String prodClientSecret = 'PzOFlk5D35GTN47u';
+
+  // Common configuration
+  final String spcName = 'MOCA Smart MOB'; // Service provider name
+  final String redirectUrl = 'mocaapp://com.exarcplus.pmo/uaepass'; // Redirect URL for UAE Pass
+  final String redirectUrlSchema = 'exampleScheme'; // Redirect URL schema
+
+  // UAE Pass API instance
+  late UaePassAPI uaePassAPI;
+
   void _loginOrLogout() async {
-    UaePassAPI uaePassAPI = UaePassAPI(
-        clientId: "sandbox_stage",
-        redirectUri: "https://oauthtest.com/authorization/return",
-        clientSecrete: "sandbox_stage",
-        appScheme: "exampleScheme",
-        isProduction: false);
+    uaePassAPI = UaePassAPI(
+      clientId: productionClientId,
+      redirectUri: redirectUrl,
+      clientSecrete: prodClientSecret,
+      appScheme: redirectUrlSchema,
+      language: 'en',
+      // Fallback to English if locale is null
+      isProduction: true, // Toggle to false for staging environment
+    );
 
     try {
       if (_token != null) {
@@ -78,9 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              _token == null
-                  ? 'Press button to get token:'
-                  : 'Press button to logout:',
+              _token == null ? 'Press button to get token:' : 'Press button to logout:',
             ),
             const SizedBox(
               height: 10,
@@ -95,8 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   ListTile(
                     title: Text("Full name:"),
-                    subtitle:
-                        Text("${_user?.firstnameEN} ${_user?.lastnameEN}"),
+                    subtitle: Text("${_user?.firstnameEN} ${_user?.lastnameEN}"),
                   ),
                 ],
               )
