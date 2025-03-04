@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uaepass_api/uaepass/const.dart';
+import 'package:uaepass_api/uaepass/memory_service.dart';
 import 'package:uaepass_api/uaepass/uaepass_user_profile_model.dart';
 import 'package:uaepass_api/uaepass/uaepass_view.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -73,6 +74,7 @@ class UaePassAPI {
   ///
   /// Returns a [String] representing the authentication code obtained during the process.
   Future<String?> signIn(BuildContext context) async {
+    await MemoryService.instance.initialize();
     String url = await _getURL();
     if (context.mounted) {
       return await Navigator.push(
@@ -86,7 +88,7 @@ class UaePassAPI {
         ),
       );
     }
-    return null;
+    return MemoryService.instance.accessCode;
   }
 
   /// Exchanges the authorization code for an access token.

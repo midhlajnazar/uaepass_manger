@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:uaepass_api/uaepass/const.dart';
+import 'package:uaepass_api/uaepass/memory_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 
@@ -85,6 +86,7 @@ class _UaePassLoginViewState extends State<UaePassLoginView> {
 
           if (url.contains('code=')) {
             final code = Uri.parse(url).queryParameters['code']!;
+            MemoryService.instance.accessCode = code;
             Navigator.pop(context, code);
             return NavigationActionPolicy.CANCEL;
           } else if (url.contains('cancelled')) {
