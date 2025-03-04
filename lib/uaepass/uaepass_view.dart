@@ -72,7 +72,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       successUrl = successURL;
       final newUrl = '${Const.uaePassScheme(widget.isProduction)}${uri.host}${uri.path}';
       String u = "$newUrl?successurl=${widget.appSchema}://success"
-          "&failureurl=$${widget.appSchema}://failure"
+          "&failureurl=${widget.appSchema}://failure"
           "&closeondone=true";
 
       await launchUrl(Uri.parse(u));
