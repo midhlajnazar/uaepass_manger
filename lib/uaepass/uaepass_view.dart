@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
-import 'package:uaepass_api/uaepass/const.dart';
+import 'package:uaepass_api/uaepass/constant.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'memory_service.dart';
+import '../service/memory_service.dart';
 
 class CustomWebView extends StatefulWidget {
   final String url;
   final String appSchema;
   final bool isProduction;
+  final String locale;
 
-  const CustomWebView({super.key, required this.url, required this.appSchema, required this.isProduction});
+  const CustomWebView({super.key, required this.url, required this.appSchema, required this.isProduction, this.locale = 'en'});
 
   @override
   State<CustomWebView> createState() => _CustomWebViewState();
@@ -94,7 +95,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       // ✅ Show the SnackBar here as per the uaepass use-case documentation
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Login cancelled. Please try again.'),
+          content: Text(widget.locale == 'ar' ? 'قام المستخدم بإلغاء تسجيل الدخول' : 'User cancelled the login'),
           backgroundColor: Colors.red.shade600,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 5),

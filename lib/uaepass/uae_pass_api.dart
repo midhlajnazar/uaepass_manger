@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uaepass_api/uaepass/const.dart';
-import 'package:uaepass_api/uaepass/memory_service.dart';
-import 'package:uaepass_api/uaepass/uaepass_user_profile_model.dart';
+import 'package:uaepass_api/uaepass/constant.dart';
+import 'package:uaepass_api/service/memory_service.dart';
+import 'package:uaepass_api/model/uaepass_user_profile_model.dart';
 import 'package:uaepass_api/uaepass/uaepass_view.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'uaepass_user_token_model.dart';
+import '../model/uaepass_user_token_model.dart';
 
 /// The [UaePassAPI] class provides methods to facilitate authentication
 /// with UAE Pass, a digital identity solution provided by the United Arab Emirates government.
@@ -18,6 +18,7 @@ class UaePassAPI {
   final String _appScheme;
   final String? _language;
   final bool _isProduction;
+  final bool _blockSOP1;
 
   /// Constructs a new instance of the [UaePassAPI] class.
   ///
@@ -27,19 +28,21 @@ class UaePassAPI {
   /// [appScheme]: The scheme used by the Flutter application.
   /// [isProduction]: Indicates whether the app is running in production mode.
   /// [language]: Language parameter to be sent to render English or Arabic login pages of UAEPASS (English page : en Arabic page : ar).
-  UaePassAPI( {
+  UaePassAPI({
     required String clientId,
     required String redirectUri,
     required String clientSecrete,
     required String appScheme,
     required bool isProduction,
+    bool blockSOP1 = false,
     String? language,
   })  : _isProduction = isProduction,
         _appScheme = appScheme,
         _clientSecrete = clientSecrete,
         _redirectUri = redirectUri,
         _clientId = clientId,
-        _language = language;
+        _language = language,
+        _blockSOP1 = blockSOP1;
 
   /// Generates the URL required to initiate the UAE Pass authentication process.
   ///
@@ -49,8 +52,7 @@ class UaePassAPI {
     String acr = Const.uaePassMobileACR;
     String acrWeb = Const.uaePassWebACR;
 
-    bool withApp = await canLaunchUrlString(
-        '${Const.uaePassScheme(_isProduction)}digitalid-users-ids');
+    bool withApp = await canLaunchUrlString('${Const.uaePassScheme(_isProduction)}digitalid-users-ids');
     if (!withApp) {
       acr = acrWeb;
     }
@@ -62,7 +64,7 @@ class UaePassAPI {
         "&scope=urn:uae:digitalid:profile:general"
         "&state=HnlHOJTkTb66Y5H"
         "&redirect_uri=$_redirectUri"
-        "&ui_locales=${_language??"en"}"
+        "&ui_locales=${_language ?? "en"}"
         "&acr_values=$acr";
 
     return url;
@@ -101,13 +103,7 @@ class UaePassAPI {
     try {
       const String url = "/idshub/token";
 
-      var data = {
-        'redirect_uri': _redirectUri,
-        'client_id': _clientId,
-        'client_secret': _clientSecrete,
-        'grant_type': 'authorization_code',
-        'code': code
-      };
+      var data = {'redirect_uri': _redirectUri, 'client_id': _clientId, 'client_secret': _clientSecrete, 'grant_type': 'authorization_code', 'code': code};
 
       final response = await http.post(
         Uri.parse(Const.baseUrl(_isProduction) + url),
@@ -136,20 +132,34 @@ class UaePassAPI {
   /// [token]: The authorization token obtained during the authentication process.
   ///
   /// Returns a [UAEPASSUserProfile] representing the profile info.
-  Future<UAEPASSUserProfile?> getUserProfile(String token) async {
+  Future<UAEPASSUserProfile?> getUserProfile(String token, {required context}) async {
     try {
       const String url = "/idshub/userinfo";
 
       final response = await http.get(
         Uri.parse(Const.baseUrl(_isProduction) + url),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer $token'
-        },
+        headers: <String, String>{'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
-        return UAEPASSUserProfile.fromJson(jsonDecode(response.body));
+        final profile = UAEPASSUserProfile.fromJson(jsonDecode(response.body));
+
+        if (_blockSOP1 && profile.userType == 'SOP2') {
+          debugPrint('UAEPASS >> UNAUTHORISED >> ${profile.userType} ');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                _language == 'ar' ? 'مستخدمو SOP1 غير مصرح لهم بتسجيل الدخول' : 'SOP1 users are not authorized to log in',
+              ),
+              backgroundColor: Colors.red.shade600,
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 5),
+            ),
+          );
+
+          return null;
+        }
+        return profile;
       } else {
         return null;
       }
@@ -167,8 +177,7 @@ class UaePassAPI {
   /// [context]: The [BuildContext] to navigate to the authentication view.
   ///
   Future logout(BuildContext context) async {
-    String url =
-        "${Const.baseUrl(_isProduction)}/idshub/logout?redirect_uri=$_redirectUri/cancelled";
+    String url = "${Const.baseUrl(_isProduction)}/idshub/logout?redirect_uri=$_redirectUri/cancelled";
     if (context.mounted) {
       return await Navigator.push(
         context,
