@@ -65,7 +65,7 @@ class _CustomWebViewState extends State<CustomWebView> {
 
   Future<NavigationDecision> onNavigationRequest(NavigationRequest request) async {
     String url = request.url.toString();
-    print('fucking url: $url');
+    debugPrint('UAEPASS url: $url');
     if (url.contains('uaepass://')) {
       Uri uri = Uri.parse(url);
       String? successURL = uri.queryParameters['successurl'];
@@ -82,10 +82,25 @@ class _CustomWebViewState extends State<CustomWebView> {
     if (url.contains('code=')) {
       String code = Uri.parse(url).queryParameters['code']!;
       MemoryService.instance.accessCode = code;
-      print('fucking code: $code');
+      debugPrint('UAEPASS code: $code');
       Navigator.of(context).pop(code);
       return NavigationDecision.prevent;
-    } else if (url.contains('cancelled')) {
+    } else if (url.contains('error=invalid_request') ||
+        url.contains('error=login_required') ||
+        url.contains('error=access_denied') ||
+        url.contains('error=cancelledOnApp')) {
+      debugPrint('UAEPASS >> User cancelled the login << ');
+
+      // ✅ Show the SnackBar here as per the uaepass use-case documentation
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login cancelled. Please try again.'),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 5),
+        ),
+      );
+
       if (!url.contains('logout')) {
         Navigator.pop(context);
         return NavigationDecision.prevent;
@@ -93,7 +108,6 @@ class _CustomWebViewState extends State<CustomWebView> {
     }
     return NavigationDecision.navigate;
   }
-
 
   @override
   Widget build(BuildContext context) {
