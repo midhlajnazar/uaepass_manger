@@ -4,8 +4,7 @@ class UAEPASSUserToken {
   String? tokenType;
   int? expiresIn;
 
-  UAEPASSUserToken(
-      {this.accessToken, this.scope, this.tokenType, this.expiresIn});
+  UAEPASSUserToken({this.accessToken, this.scope, this.tokenType, this.expiresIn});
 
   UAEPASSUserToken.fromJson(Map<String, dynamic> json) {
     accessToken = json['access_token'];

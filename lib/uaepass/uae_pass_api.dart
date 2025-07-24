@@ -16,7 +16,7 @@ class UaePassAPI {
   final String _redirectUri;
   final String _clientSecrete;
   final String _appScheme;
-  final String? _language;
+  final String _language;
   final bool _isProduction;
   final bool _blockSOP1;
 
@@ -35,7 +35,7 @@ class UaePassAPI {
     required String appScheme,
     required bool isProduction,
     bool blockSOP1 = false,
-    String? language,
+    String language = 'en',
   })  : _isProduction = isProduction,
         _appScheme = appScheme,
         _clientSecrete = clientSecrete,
@@ -64,7 +64,7 @@ class UaePassAPI {
         "&scope=urn:uae:digitalid:profile:general"
         "&state=HnlHOJTkTb66Y5H"
         "&redirect_uri=$_redirectUri"
-        "&ui_locales=${_language ?? "en"}"
+        "&ui_locales=${_language}"
         "&acr_values=$acr";
 
     return url;
@@ -86,6 +86,7 @@ class UaePassAPI {
             url: url,
             appSchema: _appScheme,
             isProduction: _isProduction,
+            locale: _language,
           ),
         ),
       );
@@ -186,6 +187,7 @@ class UaePassAPI {
             url: url,
             appSchema: _appScheme,
             isProduction: _isProduction,
+            locale: _language,
           ),
         ),
       );
