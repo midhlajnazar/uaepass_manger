@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uaepass_api/model/uaepass_user_token_model.dart';
 import 'package:uaepass_api/uaepass/constant.dart';
 import 'package:uaepass_api/service/memory_service.dart';
 import 'package:uaepass_api/model/uaepass_user_profile_model.dart';
 import 'package:uaepass_api/uaepass/uaepass_view.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import '../model/uaepass_user_token_model.dart';
 
 /// The [UaePassAPI] class provides methods to facilitate authentication
 /// with UAE Pass, a digital identity solution provided by the United Arab Emirates government.
