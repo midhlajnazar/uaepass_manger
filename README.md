@@ -16,7 +16,11 @@ Un-official UAE PASS Flutter package for authentication capability.
 - Add the plugin to your pubspec.yaml file
 
 ```yaml
-uaepass_api: ^1.0.3
+  uaepass_api:
+    git:
+      url: https://github.com/midhlajnazar/uaepass_manger
+      ref: master
+
 ```
 
 - Run flutter pub get
@@ -32,9 +36,8 @@ import 'package:uaepass_api/uaepass_api.dart';
 
 UaePassAPI uaePassAPI =UaePassAPI(
     clientId: "<clientId>",
-    redirectUri: "<redirectUri>",
+    callbackUrl: "<callbackUrl>",
     clientSecrete: "<clientSecrete>",
-    appScheme: "<Your App Scheme>",
     language: "en",
     isProduction: false);
 ```
@@ -130,25 +133,13 @@ UaePassAPI uaePassAPI =UaePassAPI(
 
 
                 <data
-                    android:host="success"
-                    android:scheme="<Your App Scheme>" />
-
-                <data
-                    android:host="failure"
+                    android:host="auth"
                     android:scheme="<Your App Scheme>" />
 
             </intent-filter>
 
 ```
-
-Note: incase kotlin error, add the following to your build.gradle file
-
-```gradle
-buildscript {
-    // update this line
-    ext.kotlin_version = '1.7.10'
-```
-
+ 
 [Read Common issues](https://docs.uaepass.ae/faq/common-integration-issues)
 
 
@@ -187,12 +178,13 @@ class UaePassController extends _$UaePassController {
   FutureOr<UAEPASSUserProfile?> build() {
     uaePassAPI = UaePassAPI(
       clientId: UAEPassConstant.uaePassClientId,
-      redirectUri: UAEPassConstant.uaePassRedirectUrl,
+      callbackUrl: UAEPassConstant.uaePassCallbackUrl,
       clientSecrete: UAEPassConstant.uaePassClientSecret,
-      appScheme: UAEPassConstant.uaePassScheme,
       isProduction: !UAEPassConstant.uaePassIsStagingEnvironment,
       blockSOP1: false, //default false
       language: 'en', // 'ar'
+      serviceProviderArabicName:  UAEPassConstant.serviceProviderArabicName, //'<Your Entity Name>'
+      serviceProviderEnglishName: UAEPassConstant.serviceProviderEnglishName, //'<Your Entity Name>'
     );
     return null;
   }
