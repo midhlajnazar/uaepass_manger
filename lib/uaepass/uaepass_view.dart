@@ -8,11 +8,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class CustomWebView extends StatefulWidget {
   final String url;
-  final String appSchema;
+  final String callbackUrl;
   final bool isProduction;
   final String locale;
 
-  const CustomWebView({super.key, required this.url, required this.appSchema, required this.isProduction, this.locale = 'en'});
+  const CustomWebView({super.key, required this.url, required this.callbackUrl, required this.isProduction, this.locale = 'en'});
 
   @override
   State<CustomWebView> createState() => _CustomWebViewState();
@@ -50,9 +50,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       ..clearLocalStorage()
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
+          onProgress: (int progress) {},
           onPageStarted: (String url) {},
           onPageFinished: (String url) {},
           onWebResourceError: (WebResourceError error) {},
@@ -71,10 +69,9 @@ class _CustomWebViewState extends State<CustomWebView> {
       String? successURL = uri.queryParameters['successurl'];
       successUrl = successURL;
       final newUrl = '${Const.uaePassScheme(widget.isProduction)}${uri.host}${uri.path}';
-      String u = "$newUrl?successurl=${widget.appSchema}://success"
-          "&failureurl=${widget.appSchema}://failure"
+      String u = "$newUrl?successurl=${widget.callbackUrl}"
+          "&failureurl=${widget.callbackUrl}"
           "&closeondone=true";
-
       await launchUrl(Uri.parse(u));
       return NavigationDecision.prevent;
     }
@@ -105,7 +102,19 @@ class _CustomWebViewState extends State<CustomWebView> {
         Navigator.pop(context);
         return NavigationDecision.prevent;
       }
+    } else if (url == widget.callbackUrl && widget.url.contains('logout')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(widget.locale == 'ar' ? 'تم تسجيل الخروج بنجاح' : 'Successfully Logout'),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context);
+      return NavigationDecision.prevent;
     }
+
     return NavigationDecision.navigate;
   }
 

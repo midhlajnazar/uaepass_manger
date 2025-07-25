@@ -13,9 +13,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 /// with UAE Pass, a digital identity solution provided by the United Arab Emirates government.
 class UaePassAPI {
   final String _clientId;
-  final String _redirectUri;
+  final String _callbackUrl;
   final String _clientSecrete;
-  final String _appScheme;
   final String _language;
   final String _serviceProviderEnglishName;
   final String _serviceProviderArabicName;
@@ -32,18 +31,16 @@ class UaePassAPI {
   /// [language]: Language parameter to be sent to render English or Arabic login pages of UAEPASS (English page : en Arabic page : ar).
   UaePassAPI({
     required String clientId,
-    required String redirectUri,
+    required String callbackUrl,
     required String clientSecrete,
-    required String appScheme,
     String serviceProviderEnglishName = 'Service Provider',
     String serviceProviderArabicName = 'مزود الخدمة',
     required bool isProduction,
     bool blockSOP1 = false,
     String language = 'en',
   })  : _isProduction = isProduction,
-        _appScheme = appScheme,
         _clientSecrete = clientSecrete,
-        _redirectUri = redirectUri,
+        _callbackUrl = callbackUrl,
         _clientId = clientId,
         _language = language,
         _serviceProviderEnglishName = serviceProviderEnglishName,
@@ -69,7 +66,7 @@ class UaePassAPI {
         "&client_id=$_clientId"
         "&scope=urn:uae:digitalid:profile:general"
         "&state=HnlHOJTkTb66Y5H"
-        "&redirect_uri=$_redirectUri"
+        "&redirect_uri=$_callbackUrl"
         "&ui_locales=${_language}"
         "&acr_values=$acr";
 
@@ -90,7 +87,7 @@ class UaePassAPI {
         MaterialPageRoute(
           builder: (context) => CustomWebView(
             url: url,
-            appSchema: _appScheme,
+            callbackUrl: _callbackUrl,
             isProduction: _isProduction,
             locale: _language,
           ),
@@ -110,7 +107,7 @@ class UaePassAPI {
     try {
       const String url = "/idshub/token";
 
-      var data = {'redirect_uri': _redirectUri, 'client_id': _clientId, 'client_secret': _clientSecrete, 'grant_type': 'authorization_code', 'code': code};
+      var data = {'redirect_uri': _callbackUrl, 'client_id': _clientId, 'client_secret': _clientSecrete, 'grant_type': 'authorization_code', 'code': code};
 
       final response = await http.post(
         Uri.parse(Const.baseUrl(_isProduction) + url),
@@ -186,14 +183,15 @@ class UaePassAPI {
   /// [context]: The [BuildContext] to navigate to the authentication view.
   ///
   Future logout(BuildContext context) async {
-    String url = "${Const.baseUrl(_isProduction)}/idshub/logout?redirect_uri=$_redirectUri/cancelled";
+    String url = "${Const.baseUrl(_isProduction)}/idshub/logout?redirect_uri=$_callbackUrl";
+
     if (context.mounted) {
       return await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CustomWebView(
             url: url,
-            appSchema: _appScheme,
+            callbackUrl: _callbackUrl,
             isProduction: _isProduction,
             locale: _language,
           ),
