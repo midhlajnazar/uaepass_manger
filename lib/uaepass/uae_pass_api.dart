@@ -17,6 +17,8 @@ class UaePassAPI {
   final String _clientSecrete;
   final String _appScheme;
   final String _language;
+  final String _serviceProviderEnglishName;
+  final String _serviceProviderArabicName;
   final bool _isProduction;
   final bool _blockSOP1;
 
@@ -33,6 +35,8 @@ class UaePassAPI {
     required String redirectUri,
     required String clientSecrete,
     required String appScheme,
+    String serviceProviderEnglishName = 'Service Provider',
+    String serviceProviderArabicName = 'مزود الخدمة',
     required bool isProduction,
     bool blockSOP1 = false,
     String language = 'en',
@@ -42,6 +46,8 @@ class UaePassAPI {
         _redirectUri = redirectUri,
         _clientId = clientId,
         _language = language,
+        _serviceProviderEnglishName = serviceProviderEnglishName,
+        _serviceProviderArabicName = serviceProviderArabicName,
         _blockSOP1 = blockSOP1;
 
   /// Generates the URL required to initiate the UAE Pass authentication process.
@@ -150,7 +156,9 @@ class UaePassAPI {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                _language == 'ar' ? 'مستخدمو SOP1 غير مصرح لهم بتسجيل الدخول' : 'SOP1 users are not authorized to log in',
+                _language == 'ar'
+                    ? 'أنت غير مؤهل للوصول إلى هذه الخدمة. إما أن حسابك لم تتم ترقيته أو لديك حساب زائر. يرجى الاتصال بـ $_serviceProviderArabicName لتتمكن من الوصول إلى الخدمة.'
+                    : 'You are not eligible to access this service. Your account is either not upgraded or you have a visitor account. Please contact $_serviceProviderEnglishName to access the services.',
               ),
               backgroundColor: Colors.red.shade600,
               behavior: SnackBarBehavior.floating,

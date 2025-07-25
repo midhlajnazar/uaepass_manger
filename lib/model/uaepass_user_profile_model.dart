@@ -3,16 +3,16 @@ class UAEPASSUserProfile {
   String? fullNameAR;
   String? gender;
   String? mobile;
-  String? lastnameEN;
+  String? lastNameEN;
   String? fullNameEN;
   String? uuid;
-  String? lastnameAR;
+  String? lastNameAR;
   String? idn;
   String? nationalityEN;
-  String? firstnameEN;
+  String? firstNameEN;
   String? userType;
   String? nationalityAR;
-  String? firstnameAR;
+  String? firstNameAR;
   String? email;
 
   UAEPASSUserProfile(
@@ -20,16 +20,16 @@ class UAEPASSUserProfile {
       this.fullNameAR,
       this.gender,
       this.mobile,
-      this.lastnameEN,
+      this.lastNameEN,
       this.fullNameEN,
       this.uuid,
-      this.lastnameAR,
+      this.lastNameAR,
       this.idn,
       this.nationalityEN,
-      this.firstnameEN,
+      this.firstNameEN,
       this.userType,
       this.nationalityAR,
-      this.firstnameAR,
+      this.firstNameAR,
       this.email});
 
   UAEPASSUserProfile.fromJson(Map<String, dynamic> json) {
@@ -37,35 +37,35 @@ class UAEPASSUserProfile {
     fullNameAR = json['fullnameAR'];
     gender = json['gender'];
     mobile = json['mobile'];
-    lastnameEN = json['lastnameEN'];
+    lastNameEN = json['lastnameEN'];
     fullNameEN = json['fullnameEN'];
     uuid = json['uuid'];
-    lastnameAR = json['lastnameAR'];
+    lastNameAR = json['lastnameAR'];
     idn = json['idn'];
     nationalityEN = json['nationalityEN'];
-    firstnameEN = json['firstnameEN'];
+    firstNameEN = json['firstnameEN'];
     userType = json['userType'];
     nationalityAR = json['nationalityAR'];
-    firstnameAR = json['firstnameAR'];
+    firstNameAR = json['firstnameAR'];
     email = json['email'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'sub': sub,
-      'fullNameAR': fullNameAR,
+      'fullnameAR': fullNameAR,
       'gender': gender,
       'mobile': mobile,
-      'lastnameEN': lastnameEN,
-      'fullNameEN': fullNameEN,
+      'lastnameEN': lastNameEN,
+      'fullnameEN': fullNameEN,
       'uuid': uuid,
-      'lastnameAR': lastnameAR,
+      'lastnameAR': lastNameAR,
       'idn': idn,
       'nationalityEN': nationalityEN,
-      'firstnameEN': firstnameEN,
+      'firstnameEN': firstNameEN,
       'userType': userType,
       'nationalityAR': nationalityAR,
-      'firstnameAR': firstnameAR,
+      'firstnameAR': firstNameAR,
       'email': email,
     };
   }

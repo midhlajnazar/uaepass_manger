@@ -1,12 +1,10 @@
 /// The [Const] class contains constants and utility methods related to UAE Pass integration.
 class Const {
   /// A constant representing the authentication context for UAE Pass mobile authentication flow.
-  static const String uaePassMobileACR =
-      "urn:digitalid:authentication:flow:mobileondevice";
+  static const String uaePassMobileACR = "urn:digitalid:authentication:flow:mobileondevice";
 
   /// A constant representing the authentication context for UAE Pass web authentication.
-  static const String uaePassWebACR =
-      "urn:safelayer:tws:policies:authentication:level:low";
+  static const String uaePassWebACR = "urn:safelayer:tws:policies:authentication:level:low";
 
   /// The scheme used for UAE Pass in production environment.
   static String uaePassProdScheme = 'uaepass://';
